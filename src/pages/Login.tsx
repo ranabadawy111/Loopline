@@ -7,20 +7,46 @@ import Input from "../components/ui/Input";
 import { useAppDispatch } from "../app/hooks";
 import { login } from "../app/authSlice";
 
+interface FormErrors {
+  email?: string;
+  password?: string;
+}
+
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export default function Login() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [email, setEmail] = useState("rana@loopline.app");
   const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState<FormErrors>({});
   const [loading, setLoading] = useState(false);
+
+  function validate(): boolean {
+    const next: FormErrors = {};
+    if (!email.trim()) {
+      next.email = "Enter your email.";
+    } else if (!EMAIL_PATTERN.test(email.trim())) {
+      next.email = "Enter a valid email address.";
+    }
+    if (!password) {
+      next.password = "Enter your password.";
+    } else if (password.length < 6) {
+      next.password = "Password must be at least 6 characters.";
+    }
+    setErrors(next);
+    return Object.keys(next).length === 0;
+  }
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
+    if (!validate()) return;
+
     setLoading(true);
     // Simulated auth check — swap for a real request when this
     // project is wired to a backend.
     await new Promise((res) => setTimeout(res, 500));
-    dispatch(login(email || "you@loopline.app"));
+    dispatch(login(email.trim()));
     navigate("/board");
   }
 
@@ -36,23 +62,27 @@ export default function Login() {
           <span className="w-9 h-9 rounded-full bg-charcoal-800 text-paper flex items-center justify-center font-display text-sm">
             L
           </span>
-          <span className="font-display text-xl text-charcoal-800">Loopline</span>
+          <span className="font-display text-xl text-charcoal-800">
+            Loopline
+          </span>
         </div>
 
         <div className="bg-white/80 border border-charcoal-700/[0.07] rounded-2xl shadow-card p-7">
-          <h1 className="font-display text-xl text-charcoal-800 mb-1">Welcome back</h1>
+          <h1 className="font-display text-xl text-charcoal-800 mb-1">
+            Welcome back
+          </h1>
           <p className="text-sm text-charcoal-600/60 mb-6">
             Sign in to your team's board.
           </p>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} noValidate className="space-y-4">
             <Input
               icon={Mail}
               type="email"
               placeholder="you@company.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              required
+              error={errors.email}
             />
             <Input
               icon={Lock}
@@ -60,6 +90,7 @@ export default function Login() {
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              error={errors.password}
             />
 
             <Button
@@ -75,7 +106,7 @@ export default function Login() {
           </form>
 
           <p className="text-xs text-charcoal-600/45 text-center mt-5">
-            Demo project — any email/password signs you in.
+            Demo project — any email + a 6+ character password signs you in.
           </p>
         </div>
       </motion.div>

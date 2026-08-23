@@ -36,6 +36,7 @@ export default function TaskModal({
   const [priority, setPriority] = useState<Priority>("medium");
   const [assigneeId, setAssigneeId] = useState<string>("");
   const [dueDate, setDueDate] = useState<string>("");
+  const [titleError, setTitleError] = useState("");
 
   useEffect(() => {
     if (task) {
@@ -51,10 +52,14 @@ export default function TaskModal({
       setAssigneeId("");
       setDueDate("");
     }
+    setTitleError("");
   }, [task, open]);
 
   function handleSubmit() {
-    if (!title.trim()) return;
+    if (!title.trim()) {
+      setTitleError("Give the task a title before saving.");
+      return;
+    }
     onSave({
       id: task?.id,
       title: title.trim(),
@@ -68,7 +73,11 @@ export default function TaskModal({
   }
 
   return (
-    <Modal open={open} onClose={onClose} title={task ? "Edit task" : "New task"}>
+    <Modal
+      open={open}
+      onClose={onClose}
+      title={task ? "Edit task" : "New task"}
+    >
       <div className="space-y-4">
         <div>
           <label className="block text-xs font-mono uppercase tracking-[0.08em] text-charcoal-600/70 mb-1.5">
@@ -77,10 +86,18 @@ export default function TaskModal({
           <input
             autoFocus
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={(e) => {
+              setTitle(e.target.value);
+              if (titleError) setTitleError("");
+            }}
             placeholder="What needs doing?"
-            className="w-full bg-white border border-charcoal-700/12 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-coral-400"
+            className={`w-full bg-white border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-coral-400 ${
+              titleError ? "border-coral-500/60" : "border-charcoal-700/12"
+            }`}
           />
+          {titleError && (
+            <p className="text-xs text-coral-600 mt-1.5">{titleError}</p>
+          )}
         </div>
 
         <div>
