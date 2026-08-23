@@ -96,7 +96,7 @@ export default function Board() {
 
   function handleSave(input: NewTaskInput & { id?: string }) {
     if (input.id) {
-      dispatch(updateTask({ id: input.id, ...input }));
+      dispatch(updateTask({ ...input, id: String(input.id) }));
     } else {
       dispatch(addTask(input));
     }

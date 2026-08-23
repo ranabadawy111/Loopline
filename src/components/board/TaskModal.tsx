@@ -61,7 +61,7 @@ export default function TaskModal({
       return;
     }
     onSave({
-      id: task?.id,
+      id: task ? String(task.id) : undefined,
       title: title.trim(),
       description: description.trim(),
       priority,
