@@ -16,7 +16,15 @@ import TaskCard from "../components/board/TaskCard";
 import TaskModal from "../components/board/TaskModal";
 import { useGetBoardQuery } from "../services/api";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
-import { hydrate, moveTask, addTask, updateTask, deleteTask, selectAllTasks, type NewTaskInput } from "../app/boardSlice";
+import {
+  hydrate,
+  moveTask,
+  addTask,
+  updateTask,
+  deleteTask,
+  selectAllTasks,
+  type NewTaskInput,
+} from "../app/boardSlice";
 import { logout, selectEmail } from "../app/authSlice";
 import { useNavigate } from "react-router-dom";
 import type { ColumnId, Task } from "../data/types";
@@ -38,7 +46,9 @@ export default function Board() {
     if (data) dispatch(hydrate(data.tasks));
   }, [data, dispatch]);
 
-  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
+  );
 
   const filteredTasks = useMemo(() => {
     if (!search.trim()) return tasks;
@@ -47,7 +57,10 @@ export default function Board() {
   }, [tasks, search]);
 
   function handleDragStart(event: DragStartEvent) {
-    const task = tasks.find((t) => t.id === event.active.id);
+    const activeId = String(event.active.id);
+
+    const task = tasks.find((t) => String(t.id) === activeId);
+
     setActiveTask(task || null);
   }
 
@@ -56,20 +69,20 @@ export default function Board() {
     const { active, over } = event;
     if (!over) return;
 
-    const activeTaskItem = tasks.find((t) => t.id === active.id);
+    const activeId = String(active.id);
+    const overId = String(over.id);
+
+    const activeTaskItem = tasks.find((t) => String(t.id) === activeId);
     if (!activeTaskItem) return;
 
-    // `over.id` is either a column id (dropped on empty column area)
-    // or another task's id (dropped among cards) — resolve to a column either way.
-    const overColumn = data?.columns.find((c) => c.id === over.id)?.id;
-    const overTask = tasks.find((t) => t.id === over.id);
+    const overColumn = data?.columns.find((c) => String(c.id) === overId)?.id;
+    const overTask = tasks.find((t) => String(t.id) === overId);
     const targetColumn = overColumn || overTask?.columnId;
 
     if (targetColumn && targetColumn !== activeTaskItem.columnId) {
       dispatch(moveTask({ taskId: activeTaskItem.id, toColumn: targetColumn }));
     }
   }
-
   function openNewTaskModal(columnId: ColumnId) {
     setEditingTask(null);
     setModalColumn(columnId);
@@ -97,7 +110,9 @@ export default function Board() {
             <span className="w-8 h-8 rounded-full bg-charcoal-800 text-paper flex items-center justify-center font-display text-sm">
               L
             </span>
-            <span className="font-display text-lg text-charcoal-800">Loopline</span>
+            <span className="font-display text-lg text-charcoal-800">
+              Loopline
+            </span>
           </div>
 
           <div className="w-full max-w-xs hidden sm:block">
@@ -158,7 +173,9 @@ export default function Board() {
                 <div className="w-72 rotate-2">
                   <TaskCard
                     task={activeTask}
-                    assignee={data?.members.find((m) => m.id === activeTask.assigneeId)}
+                    assignee={data?.members.find(
+                      (m) => m.id === activeTask.assigneeId,
+                    )}
                     onClick={() => {}}
                   />
                 </div>

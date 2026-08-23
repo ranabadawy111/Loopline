@@ -1,5 +1,8 @@
 import { useDroppable } from "@dnd-kit/core";
-import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import { Plus } from "lucide-react";
 import type { Column, Task, Member } from "../../data/types";
 import TaskCard from "./TaskCard";
@@ -33,8 +36,12 @@ export default function BoardColumn({
       <div className="flex items-center justify-between px-1 mb-3">
         <div className="flex items-center gap-2">
           <span className={`w-2 h-2 rounded-full ${dotColors[column.id]}`} />
-          <h3 className="font-display text-sm text-charcoal-800">{column.title}</h3>
-          <span className="text-xs font-mono text-charcoal-600/40">{tasks.length}</span>
+          <h3 className="font-display text-sm text-charcoal-800">
+            {column.title}
+          </h3>
+          <span className="text-xs font-mono text-charcoal-600/40">
+            {tasks.length}
+          </span>
         </div>
         <button
           onClick={() => onAddClick(column.id)}
@@ -51,7 +58,10 @@ export default function BoardColumn({
           isOver ? "bg-coral-500/[0.06]" : "bg-charcoal-700/[0.03]"
         }`}
       >
-        <SortableContext items={tasks.map((t) => t.id)} strategy={verticalListSortingStrategy}>
+        <SortableContext
+          items={tasks.map((t) => String(t.id))}
+          strategy={verticalListSortingStrategy}
+        >
           {tasks.map((task) => (
             <TaskCard
               key={task.id}

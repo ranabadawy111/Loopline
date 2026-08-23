@@ -23,8 +23,14 @@ interface TaskCardProps {
 }
 
 export default function TaskCard({ task, assignee, onClick }: TaskCardProps) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
-    useSortable({ id: task.id });
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: String(task.id) });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -46,7 +52,9 @@ export default function TaskCard({ task, assignee, onClick }: TaskCardProps) {
         <Avatar member={assignee} size={22} />
       </div>
 
-      <p className="text-sm text-charcoal-800 leading-snug mb-3">{task.title}</p>
+      <p className="text-sm text-charcoal-800 leading-snug mb-3">
+        {task.title}
+      </p>
 
       <div className="flex items-center gap-3 text-[11px] text-charcoal-600/55 font-mono">
         {task.dueDate && (
