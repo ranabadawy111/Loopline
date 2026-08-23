@@ -64,7 +64,7 @@ export default function BoardColumn({
         >
           {tasks.map((task) => (
             <TaskCard
-              key={task.id}
+              key={String(task.id)}
               task={task}
               assignee={members.find((m) => m.id === task.assigneeId)}
               onClick={() => onTaskClick(task)}

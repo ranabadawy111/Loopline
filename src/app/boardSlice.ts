@@ -38,13 +38,20 @@ const boardSlice = createSlice({
       const task = state.tasks.find((t) => t.id === action.payload.taskId);
       if (task) task.columnId = action.payload.toColumn;
     },
-    addTask(state, action: PayloadAction<NewTaskInput>) {
-      state.tasks.unshift({
-        id: nanoid(),
-        createdAt: new Date().toISOString(),
-        commentCount: 0,
-        ...action.payload,
-      });
+    addTask: {
+      reducer(state, action: PayloadAction<Task>) {
+        state.tasks.unshift(action.payload);
+      },
+      prepare(input: NewTaskInput) {
+        return {
+          payload: {
+            ...input,
+            id: nanoid(),
+            createdAt: new Date().toISOString(),
+            commentCount: 0,
+          },
+        };
+      },
     },
     updateTask(state, action: PayloadAction<Partial<Task> & { id: string }>) {
       const task = state.tasks.find(
@@ -72,8 +79,6 @@ export const selectTasksByColumn = (
 export const selectAllTasks = (state: { board: BoardState }) =>
   state.board.tasks;
 
-// Exported standalone so it's testable without a store — see
-// src/test/boardSlice.test.ts
 export function countTasksByColumn(tasks: Task[], columnId: ColumnId): number {
   return tasks.filter((t) => t.columnId === columnId).length;
 }
