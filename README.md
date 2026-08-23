@@ -2,7 +2,9 @@
 
 A Kanban-style project management tool built as a portfolio piece, in **TypeScript**, with real drag-and-drop, a mock authentication flow, and unit tests — deliberately closer to the shape of real enterprise dashboard work than a marketing site or booking flow.
 
-**[Live demo →](#)** _(add your Vercel/Netlify link here after deploying — demo login accepts any email/password)_
+## 🚀 Live Demo
+
+[Live demo →](https://vercel.com/ranabadawy111s-projects/loopline)
 
 ## What it does
 
